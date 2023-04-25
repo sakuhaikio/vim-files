@@ -9,7 +9,7 @@
 "syn match cppType "\<type_\w\+\>"
 "syn match    custonkey    "auto"
 
-hi CocSemMacro guifg=#4dc7ae
+hi CocSemMacro guifg=#dadada
 hi CocSemType guifg=#4dc7ae
 hi CocSemDeduced guifg=#569CD6
 "hi CocSemDefaultLibrary guifg=#dadada
