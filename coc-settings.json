@@ -1,0 +1,10 @@
+{
+  "pyright.inlayHints.variableTypes": true,
+  "pyright.inlayHints.functionReturnTypes": true,
+  "suggest.noselect": true,
+  "suggest.enablePreselect": false,
+  "suggest.minTriggerInputLength": 3,
+  "semanticTokens.enable": 1,
+  "inlayHint.enable": false,
+  "clangd.disableSnippetCompletion": true
+}
