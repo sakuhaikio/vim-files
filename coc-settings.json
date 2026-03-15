@@ -1,0 +1,16 @@
+{
+  "pyright.inlayHints.variableTypes": true,
+  "pyright.inlayHints.functionReturnTypes": true,
+  "suggest.noselect": true,
+  "suggest.enablePreselect": false,
+  "suggest.minTriggerInputLength": 3,
+  "suggest.maxCompleteItemCount": 8,
+  "semanticTokens.enable": true,
+  "inlayHint.enable": false,
+
+  "diagnostic.virtualText": false,
+
+  "clangd.disableSnippetCompletion": true,
+  "clangd.path": "C:\\msys64\\ucrt64\\bin\\clangd.exe",
+  "clangd.arguments": ["--log=verbose"]
+}

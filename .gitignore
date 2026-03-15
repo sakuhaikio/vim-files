@@ -1,0 +1,7 @@
+plugged/
+undo/
+.netrwhist
+*.swp
+*.swo
+*.tmp
+.coc/
