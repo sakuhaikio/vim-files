@@ -21,11 +21,18 @@ set termguicolors
 set t_Co=256
 set t_ut=
 
-" No highlight after search
-set nohlsearch
+let mapleader = " "
+let maplocalleader = " "
+
+"highlight after search
+"set nowildmenu
+set hlsearch
+nnoremap <silent> <leader><space> :nohlsearch<CR>
 
 " NOTE: This disables the wildmenu (cmdline completion menu)
-set nowildmenu
+"set nowildmenu
+set wildmenu
+set wildmode=longest:full,full
 
 " =========================
 " Editing
@@ -89,6 +96,11 @@ let g:NERDTreeMinimalUI = 1
 let g:NERDTreeDirArrows = 0
 let g:NERDTreeShowHidden = 1
 nnoremap <C-n> :NERDTreeToggle<CR>
+
+nnoremap <leader>bn :bnext<CR>
+nnoremap <leader>bp :bprevious<CR>
+nnoremap <leader>bd :bd<CR>
+nnoremap <leader>bl :ls<CR>:b<Space>
 
 " =========================
 " Colorscheme (safe)
