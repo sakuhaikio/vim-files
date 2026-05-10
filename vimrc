@@ -102,8 +102,27 @@ inoremap <expr> <Tab>   coc#pum#visible() ? coc#pum#next(1) : "\<Tab>"
 inoremap <expr> <S-Tab> coc#pum#visible() ? coc#pum#prev(1) : "\<S-Tab>"
 
 nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gD <Plug>(coc-declaration)
+nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
+
+" rename with sequence '\ r n'
+nmap <leader>rn <Plug>(coc-rename) 
+
+" Formating
+nmap <leader>f <Plug>(coc-format)
+xmap <leader>f <Plug>(coc-format-selected)
+
+" next \ previous error
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" documentation
+nnoremap <silent> K :call CocActionAsync('doHover')<CR>
+
+" Symbolilista nykyisestä tiedostosta 
+nnoremap <silent> <leader>o :CocList outline<CR>
 
 " Make Ctrl+C behave like Esc in insert mode
 imap <C-c> <Esc>

@@ -12,5 +12,8 @@
 
   "clangd.disableSnippetCompletion": true,
   "clangd.path": "C:\\msys64\\ucrt64\\bin\\clangd.exe",
-  "clangd.arguments": ["--log=verbose"]
+  "clangd.arguments": ["--log=verbose"],
+  
+  "cmake.lsp.enable": true,
+  "cmake.lsp.serverPath": "C:\\python\\python-3.12.10\\Scripts\\cmake-language-server.exe"
 }
