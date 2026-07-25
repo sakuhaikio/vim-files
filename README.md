@@ -4,6 +4,30 @@ Compact reference for all custom keybindings and commands in this Vim configurat
 
 ---
 
+# Installation
+
+Clone the repository and run the installation script:
+
+```bash
+git clone <repository-url>
+cd vim-files
+./install.sh
+```
+
+The installer creates symbolic links for:
+
+```text
+~/.vimrc
+~/.vim/colors/omateema.vim
+~/.vim/syntax/cpp.vim
+~/.vim/coc-settings.json
+~/.clang-format
+```
+
+All configuration files remain in this repository, so any changes are reflected immediately without copying files.
+
+---
+
 # Leader Key
 
 | Key        | Meaning |
