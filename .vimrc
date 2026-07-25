@@ -179,17 +179,34 @@ imap <C-c> <Esc>
 " Make Y behave like D and C: operate until end of line
 nnoremap Y y$
 
+" Move by screen lines when wrapping is enabled.
+" Otherwise use normal logical line movement.
+nnoremap <expr> j &wrap ? 'gj' : 'j'
+nnoremap <expr> k &wrap ? 'gk' : 'k'
+vnoremap <expr> j &wrap ? 'gj' : 'j'
+vnoremap <expr> k &wrap ? 'gk' : 'k'
+
 " Terminal mode: Esc returns to normal mode
 tnoremap <Esc> <C-\><C-n>
-
 
 " ============================================================================
 " Search / grep
 " ============================================================================
 
 " Use ripgrep for :grep
-set grepprg=rg\ --vimgrep\ --smart-case\ --hidden
+set grepprg=rg\ --vimgrep\ --smart-case\ --glob\ '!build/**'
 set grepformat=%f:%l:%c:%m
+
+" Search files with fzf
+let $FZF_DEFAULT_COMMAND = 'fdfind
+    \ --type f
+    \ --hidden
+    \ --exclude .git
+    \ --exclude build
+    \ --exclude out
+    \ --exclude cmake-build-debug
+    \ --exclude cmake-build-release
+    \ --exclude .cache'
 
 
 " ============================================================================
@@ -338,11 +355,13 @@ let g:fzf_layout = { 'down': '40%' }
 autocmd FileType fzf wincmd J
 
 " File search
-nnoremap <leader>p :Files 
+nnoremap <leader>p :Files<CR>
 
 " Text search with ripgrep
-nnoremap <leader>g :Rg 
+nnoremap <leader>g :Rg<CR>
 
+" Text search with ripgrep
+nnoremap <leader>bb :Buffers<CR>
 
 " ============================================================================
 " Cursor shape in terminal Vim
@@ -368,31 +387,7 @@ autocmd BufNewFile,BufRead *.tpp setfiletype cpp
 " ============================================================================
 
 " Switch between header and source files
-function! SwitchHeaderSource()
-  let l:ext = expand('%:e')
-  let l:base = expand('%:r')
-
-  if l:ext =~# '^\(h\|hh\|hpp\)$'
-    for s in ['cc', 'cpp', 'c']
-      if filereadable(l:base . '.' . s)
-        execute 'edit ' . l:base . '.' . s
-        return
-      endif
-    endfor
-  else
-    for h in ['hh', 'hpp', 'h']
-      if filereadable(l:base . '.' . h)
-        execute 'edit ' . l:base . '.' . h
-        return
-      endif
-    endfor
-  endif
-
-  echo "No matching file found"
-endfunction
-
-command! SwitchHS call SwitchHeaderSource()
-nnoremap <C-h> :SwitchHS<CR>
+nnoremap <silent> <C-h> :CocCommand clangd.switchSourceHeader<CR>
 
 
 " ============================================================================
@@ -400,4 +395,15 @@ nnoremap <C-h> :SwitchHS<CR>
 " ============================================================================
 
 " Remove Windows carriage returns from current file
-command! FixFormat %s/\r//g
+command! FixFormat silent! %s/\r//ge
+
+
+" ============================================================================
+" WSL
+" ============================================================================
+
+" Quickly remove Windows carriage returns (^M) after pasting
+" from the Windows clipboard.
+if exists('$WSL_DISTRO_NAME')
+    nnoremap <silent> <leader><leader> :FixFormat<CR>
+endif
