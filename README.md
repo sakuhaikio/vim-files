@@ -93,6 +93,24 @@ Supported extensions:
 
 ---
 
+
+---
+
+# Wrapped Lines
+
+| Key | Action |
+| --- | --- |
+| `j` | Move by visual line when `wrap` is enabled, otherwise by logical line |
+| `k` | Move by visual line when `wrap` is enabled, otherwise by logical line |
+
+---
+
+# WSL
+
+| Key | Action |
+| --- | --- |
+| `<leader><leader>` | Remove Windows carriage returns (`^M`) from the current file |
+
 # Quickfix Window
 
 | Key     | Action                       |
@@ -119,6 +137,7 @@ Supported extensions:
 | `NERDTree` | File tree              |
 | `fzf.vim`  | Fuzzy finder           |
 | `ripgrep`  | Fast project search    |
+| `fd` / `fdfind` | Fast file discovery for `:Files` (hidden files included, common build directories excluded) |
 
 ---
 
