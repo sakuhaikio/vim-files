@@ -261,7 +261,7 @@ set updatetime=300
 
 let g:NERDTreeMinimalUI = 1
 let g:NERDTreeDirArrows = 0
-let g:NERDTreeShowHidden = 1
+let g:NERDTreeShowHidden = 0
 
 " Toggle NERDTree
 nnoremap <C-n> :NERDTreeToggle<CR>
