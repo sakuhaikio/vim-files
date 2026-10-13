@@ -1,106 +1,38 @@
-" ============================================================================
-" Custom Keybindings and Commands
-" ============================================================================
+" =============================================================================
+" Vim configuration
+" =============================================================================
+" Purpose: terminal-first C/C++ development with coc.nvim, NERDTree and fzf.
+" Leader: Space (set before any mappings).
 "
-" Leader key:
-"   <leader> = Space
+" Key conventions:
+"   <leader>p / <leader>g   Find files / search project text
+"   <leader>bb              Pick an open buffer with fzf
+"   <leader>bn/bp/bd/bl     Next / previous / delete / list buffers
+"   <leader>f               Format buffer (Visual: format selection)
+"   <leader>rn              Rename symbol
+"   <leader>o               Current-file symbol outline
+"   <C-n> / <C-h>           NERDTree / switch C++ header-source
+"   gd/gD/gy/gi/gr          Definition/declaration/type/implementation/refs
+"   [g / ]g                Previous / next diagnostic
+"   K                      Hover documentation
+"   <leader><Space>         Clear search highlighting
+"   <leader>"               Surround word/selection with double quotes
+"   <leader>'               Surround word/selection with single quotes
+"   <leader>)/]/}/>         Surround with (), [], {} or <>
 "
+" Commands:
+"   :FixFormat             Remove carriage-return characters (^M)
+"   :CpFileName            Copy filename including extension
+"   :CpFileStem            Copy filename without final extension
+"   :CpRelPath             Copy path relative to Vim's current directory
+"   :CpAbsPath             Copy absolute path
+"   :CpLine / :Cpl         Copy current line without leading indentation
+"   IncludeGuard()         Experimental include-guard helper function
 "
-" ----------------------------------------------------------------------------
-" Search / Navigation
-" ----------------------------------------------------------------------------
-"
-"   <leader><space>   Clear search highlight
-"
-"   <leader>p         Open :Files (fzf file search)
-"   <leader>g         Open :Rg (ripgrep search)
-"
-"   gd                Go to definition
-"   gD                Go to declaration
-"   gy                Go to type definition
-"   gi                Go to implementation
-"   gr                Show references
-"
-"   K                 Show hover documentation
-"
-"
-" ----------------------------------------------------------------------------
-" Buffers
-" ----------------------------------------------------------------------------
-"
-"   <leader>bn        Next buffer
-"   <leader>bp        Previous buffer
-"   <leader>bd        Delete current buffer
-"   <leader>bl        List buffers and start :buffer command
-"
-"
-" ----------------------------------------------------------------------------
-" coc.nvim
-" ----------------------------------------------------------------------------
-"
-"   <leader>rn        Rename symbol
-"
-"   <leader>f         Format current buffer
-"   Visual <leader>f  Format selected text
-"
-"   [g                Previous diagnostic
-"   ]g                Next diagnostic
-"
-"   <leader>o         Show symbol outline for current file
-"
-"   Tab               Next completion item
-"   Shift-Tab         Previous completion item
-"
-"
-" ----------------------------------------------------------------------------
-" NERDTree
-" ----------------------------------------------------------------------------
-"
-"   Ctrl+n            Toggle NERDTree
-"
-"
-" ----------------------------------------------------------------------------
-" C / C++ helpers
-" ----------------------------------------------------------------------------
-"
-"   Ctrl+h            Switch between header and source file
-"
-"
-" ----------------------------------------------------------------------------
-" Terminal mode
-" ----------------------------------------------------------------------------
-"
-"   Esc               Exit terminal mode to normal mode
-"
-"
-" ----------------------------------------------------------------------------
-" Insert mode tweaks
-" ----------------------------------------------------------------------------
-"
-"   Ctrl+c            Behave like Esc in insert mode
-"
-"
-" ----------------------------------------------------------------------------
-" Quickfix
-" ----------------------------------------------------------------------------
-"
-"   q                 Close quickfix window
-"   Enter             Open quickfix item and close quickfix window
-"
-"
-" ----------------------------------------------------------------------------
-" Custom Commands
-" ----------------------------------------------------------------------------
-"
-"   :SwitchHS         Switch between header and source file
-"
-"   :FixFormat        Remove Windows carriage returns (^M)
-"
-" ============================================================================
-
-
-
-
+" Dependencies: vim-plug, coc.nvim, NERDTree, fzf.vim, fzf, rg, fdfind.
+" fzf.vim is configured below but is not installed by this vim-plug block.
+" Clipboard commands require a Vim build with +clipboard and a working + register.
+" =============================================================================
 
 " ============================================================================
 " General
@@ -171,10 +103,13 @@ inoremap <Space> <Space><C-g>u
 " Keep formatoptions sane.
 " Do not automatically continue comments when pressing Enter or using o/O.
 set formatoptions+=/
-autocmd FileType * setlocal formatoptions-=cro
+augroup UserEditingOptions
+  autocmd!
+  autocmd FileType * setlocal formatoptions-=cro
+augroup END
 
 " Make Ctrl+C behave like Esc in insert mode
-imap <C-c> <Esc>
+inoremap <C-c> <Esc>
 
 " Make Y behave like D and C: operate until end of line
 nnoremap Y y$
@@ -319,7 +254,7 @@ nnoremap <silent> <leader>o :CocList outline<CR>
 " Format current buffer
 nmap <leader>f <Plug>(coc-format)
 
-" Format visual selection
+" Format Visual selection
 xmap <leader>f <Plug>(coc-format-selected)
 
 
@@ -337,13 +272,13 @@ nmap <silent> ]g <Plug>(coc-diagnostic-next)
 " ============================================================================
 
 " Put quickfix window at the bottom
-autocmd FileType qf wincmd J
-
-" Close quickfix with q
-autocmd FileType qf nnoremap <buffer> q :cclose<CR>
-
-" Open selected quickfix item and close the quickfix window
-autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
+augroup UserQuickfix
+  autocmd!
+  autocmd FileType qf wincmd J
+  " Buffer-local mappings: only affect quickfix windows.
+  autocmd FileType qf nnoremap <buffer> q :cclose<CR>
+  autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
+augroup END
 
 
 " ============================================================================
@@ -352,7 +287,10 @@ autocmd FileType qf nnoremap <buffer> <CR> <CR>:cclose<CR>
 
 " Open fzf at the bottom
 let g:fzf_layout = { 'down': '40%' }
-autocmd FileType fzf wincmd J
+augroup UserFzf
+  autocmd!
+  autocmd FileType fzf wincmd J
+augroup END
 
 " File search
 nnoremap <leader>p :Files<CR>
@@ -360,7 +298,7 @@ nnoremap <leader>p :Files<CR>
 " Text search with ripgrep
 nnoremap <leader>g :Rg<CR>
 
-" Text search with ripgrep
+" Open-buffer search with fzf
 nnoremap <leader>bb :Buffers<CR>
 
 " ============================================================================
@@ -379,7 +317,10 @@ endif
 " ============================================================================
 
 " Treat .tpp files as C++
-autocmd BufNewFile,BufRead *.tpp setfiletype cpp
+augroup UserCppFiletypes
+  autocmd!
+  autocmd BufNewFile,BufRead *.tpp setfiletype cpp
+augroup END
 
 
 " ============================================================================
@@ -394,16 +335,79 @@ nnoremap <silent> <C-h> :CocCommand clangd.switchSourceHeader<CR>
 " Custom commands
 " ============================================================================
 
-" Remove Windows carriage returns from current file
+" :FixFormat is defined in the custom commands section below.
+
+
+" =============================================================================
+" Custom commands: text cleanup and C/C++ helpers
+" =============================================================================
+" Remove Windows CR characters from the current buffer.
 command! FixFormat silent! %s/\r//ge
 
+" Insert a simple include guard based on the current filename.
+" WARNING: filename-only guards may collide across directories; the function
+" also assumes a suitable header buffer. Review before using on existing files.
+function! IncludeGuard() abort
+    let guard = toupper(expand('%:t'))
+    let guard = substitute(guard, '[^A-Z0-9]', '_', 'g')
 
-" ============================================================================
-" WSL
-" ============================================================================
+    execute 'normal! ggO#ifndef ' . guard
+    execute 'normal! o#define ' . guard
+    execute 'normal! Go#endif // ' . guard
+endfunction
 
-" Quickly remove Windows carriage returns (^M) after pasting
-" from the Windows clipboard.
+" WSL-only shortcut to strip CR after Windows clipboard pastes.
 if exists('$WSL_DISTRO_NAME')
     nnoremap <silent> <leader><leader> :FixFormat<CR>
 endif
+
+" =============================================================================
+" Custom commands: clipboard
+" =============================================================================
+" %:t = filename; %:t:r = stem; %:. = cwd-relative; %:p = absolute.
+" @+ is the system clipboard. These commands do not modify the buffer.
+command! CpFileName let @+ = expand('%:t')
+command! CpFileStem let @+ = expand('%:t:r')
+command! CpRelPath  let @+ = expand('%:.')
+command! CpAbsPath  let @+ = expand('%:p')
+
+" getline('.') reads the cursor line; ^\s* strips leading spaces/tabs.
+" Trailing whitespace is preserved; no newline is appended.
+command! CpLine let @+ = substitute(getline('.'), '^\s*', '', '')
+command! Cpl CpLine
+
+
+" =============================================================================
+" Custom mappings: surround text
+" =============================================================================
+" Normal mode: ciw replaces the word under the cursor.
+" Visual mode: c replaces the selected text.
+" <C-r>" inserts the replaced text from the unnamed register.
+" NOTE: these mappings overwrite the unnamed register; they are primarily
+" intended for characterwise Visual selections, not line/block selections.
+" Original navigation keys remain intact: all mappings require <leader>.
+
+" Double quotes: "..."
+nnoremap <leader>" ciw"<C-r>""<Esc>
+xnoremap <leader>" c"<C-r>""<Esc>
+
+" Single quotes: '...'
+nnoremap <leader>' ciw'<C-r>"'<Esc>
+xnoremap <leader>' c'<C-r>"'<Esc>
+
+" Parentheses: (...)
+nnoremap <leader>) ciw(<C-r>")<Esc>
+xnoremap <leader>) c(<C-r>")<Esc>
+
+" Square brackets: [...]
+nnoremap <leader>] ciw[<C-r>"]<Esc>
+xnoremap <leader>] c[<C-r>"]<Esc>
+
+" Braces: {...}
+nnoremap <leader>} ciw{<C-r>"}<Esc>
+xnoremap <leader>} c{<C-r>"}<Esc>
+
+" Angle brackets: <...>
+nnoremap <leader>> ciw<<C-r>"><Esc>
+xnoremap <leader>> c<<C-r>"><Esc>
+
